@@ -1,0 +1,32 @@
+# BEGIN
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+Options -MultiViews
+
+DirectoryIndex index.php
+
+# Adicionar barra no final da URL, caso não tenha.
+RewriteCond %{REQUEST_URI} !(/$|\.)
+RewriteRule ^ %{REQUEST_URI}/ [L,R=301]
+
+# Forçar HTTPS e WWW
+RewriteCond %{HTTP_HOST} !^www\.(.*)$
+RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$
+RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{https} off
+RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$
+RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php74 .php .php7 .phtml
+</IfModule>
+
+# END
